@@ -28,8 +28,8 @@ pub enum SketchHashKey {
 }
 
 // Invalid is treated as greater than valid values (making it a nice boundary value for list end)
-impl std::cmp::PartialOrd for SketchHashKey {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+impl std::cmp::Ord for SketchHashKey {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         use self::SketchHashKey::*;
         use std::cmp::Ordering::*;
         match (self, other) {
@@ -44,7 +44,12 @@ impl std::cmp::PartialOrd for SketchHashKey {
             (_, Negative(_)) => Greater,
             (Negative(_), _) => Less,
         }
-        .into()
+    }
+}
+
+impl PartialOrd for SketchHashKey {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
